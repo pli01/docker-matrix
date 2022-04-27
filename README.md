@@ -3,59 +3,52 @@
 matrix docker-compose stack for local/dev/testing purpose
 
 It includes:
- - nginx reverseproxy: to route trafic through  (`/`) - element-web, and (`/_matrix|/_synapse`) - synapse
+ - nginx reverseproxy (http://localhost) :
+   - to route trafic through  (`/`) to element-web
+   - and (`/_matrix|/_synapse`) to synapse
  - element : vectorim/element-web web instance
  - synapse : matrixdotorg/synapse instance
  - db : postgres instance
- - mailhog : mailhog/mailhog smtp and web mail instance (for dev purpose)
+ - mailhog (http://localhost:8025/): mailhog/mailhog smtp and webmail instance
 
 ## Run
 
 * Prereq:
   - install docker, docker-compose
-  - data and generated config ar stored in matrix/ directory:
-     - element web config: matrix/element-config.json
-     - synapse config: matrix/synapse/ (must be generated after bootstrap migrate_config below)
-     - postgresdata dir: matrix/postgresdata/ (populated at bootstrap)
+  - bootstrap data and generated config are stored in matrix/ directory:
+     - element web config: `matrix/element-config.json`
+     - synapse config dir : `matrix/synapse/` (must be generated after bootstrap migrate_config below)
+     - postgres data dir: `matrix/postgresdata/` (populated at bootstrap)
 
-* Bootstrap:
+* First, configure and launch the stack for the first time
 ```
-# generate matrix/synapse/ config from template file
-docker-compose run  --rm -e SYNAPSE_NO_TLS=yes -e SYNAPSE_SERVER_NAME=localhost -e SYNAPSE_REPORT_STATS=no -e SYNAPSE_ENABLE_REGISTRATION=yes -e POSTGRES_DB=synapse -e POSTGRES_USER=synapse -e POSTGRES_PASSWORD=STRONGPASSWORD  synapse migrate_config
-
-# add email config
-cat <<EOF >> matrix/synapse/homeserver.yaml
-
-email:
-   enable_notifs: true
-   smtp_host: "mailhog"
-   smtp_port: 1025
-   smtp_user: "dev@dev.net"
-   smtp_pass: "changeme"
-   require_transport_security: false
-   notif_from: "dev@dev.net"
-   notif_for_new_users: true
-EOF
+make bootstrap-all
 ```
 
-* Run services
-```
-make build
-make up
-```
-* Add new users
-```
-# create admin user
-docker-compose exec synapse register_new_matrix_user -a -u root -p CHANGEME -c /data/homeserver.yaml http://localhost:8008
-# create test user
-docker-compose exec synapse register_new_matrix_user --no-admin -u test -p CHANGEME -c /data/homeserver.yaml http://localhost:8008
-```
+* Then connect to http://localhost with one of users:
+  - `admin` 
+  - `test`
+(default password `CHANGEME`)
 
-* Stop/Destroy:
+* To stop the stack
 ```
 make down
-make rm
 ```
+
+* To start the stack
+```
+make up
+```
+
+* To remove all datas and stack
+```
+make clean-all
+```
+
+## details
+
+* See script `bootstrap.sh` to add other homeserver configuration
+* Add new users `create-user.sh` to add admin and test user
 
 ## Links:
 ```

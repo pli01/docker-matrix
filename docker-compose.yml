@@ -73,11 +73,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
 
-  #
-  # smtp:
-  #   image: mailhog:
-  #
-  # sydent:
+  # sygnal:
   #   image: matrixdotorg/sygnal:latest
   # sydent:
   #   image: matrixdotorg/sydent:latest
