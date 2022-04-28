@@ -7,7 +7,7 @@ echo "# enable registration without verification (for dev purpose only)"
 cat <<EOF | tee -a matrix/synapse/homeserver.yaml
 
 enable_registration_without_verification: true
-public_baseurl: http://localhost
+public_baseurl: http://localhost/
 EOF
 
 echo "# add email config to matrix/synapse/homeserver.yaml"
