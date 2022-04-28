@@ -44,48 +44,48 @@ services:
     links:
       - db
 
-  sydent:
-    build:
-      context: build/sydent
-      dockerfile: Dockerfile
-    image: matrixdotorg/sydent:${MATRIX_SYDENT_VERSION:-latest}
-    restart: unless-stopped
-    networks:
-      - matrix-network
-        # ipv4_address: 10.10.10.4
-    volumes:
-     - ./matrix/sydent:/data
-    depends_on:
-      - db
-    links:
-      - db
-
-  sygnal:
-    image: matrixdotorg/sygnal:${MATRIX_SYGNAL_VERSION:-latest}
-    restart: unless-stopped
-    networks:
-      - matrix-network
-        # ipv4_address: 10.10.10.5
-    volumes:
-     - ./matrix/sygnal:/data
-    depends_on:
-      - db
-    links:
-      - db
-
-  content-scanner:
-    image: ghcr.io/matrix-org/matrix-content-scanner:${MATRIX_CONTENT_SCANNER_VERSION:-latest}
-    restart: unless-stopped
-    networks:
-      - matrix-network
-        # ipv4_address: 10.10.10.6
-    volumes:
-     - ./matrix/content-scanner:/data
-    depends_on:
-      - db
-    links:
-      - db
-
+#  sydent:
+#    build:
+#      context: build/sydent
+#      dockerfile: Dockerfile
+#    image: matrixdotorg/sydent:${MATRIX_SYDENT_VERSION:-latest}
+#    restart: unless-stopped
+#    networks:
+#      - matrix-network
+#        # ipv4_address: 10.10.10.4
+#    volumes:
+#     - ./matrix/sydent:/data
+#    depends_on:
+#      - db
+#    links:
+#      - db
+#
+#  sygnal:
+#    image: matrixdotorg/sygnal:${MATRIX_SYGNAL_VERSION:-latest}
+#    restart: unless-stopped
+#    networks:
+#      - matrix-network
+#        # ipv4_address: 10.10.10.5
+#    volumes:
+#     - ./matrix/sygnal:/data
+#    depends_on:
+#      - db
+#    links:
+#      - db
+#
+#  content-scanner:
+#    image: ghcr.io/matrix-org/matrix-content-scanner:${MATRIX_CONTENT_SCANNER_VERSION:-latest}
+#    restart: unless-stopped
+#    networks:
+#      - matrix-network
+#        # ipv4_address: 10.10.10.6
+#    volumes:
+#     - ./matrix/content-scanner:/data
+#    depends_on:
+#      - db
+#    links:
+#      - db
+#
   element:
     image: vectorim/element-web:${ELEMENT_VERSION:-latest}
     # image: vectorim/element-web:v1.10.6

@@ -13,6 +13,7 @@ DC_RUN_ARGS := --rm ${DC_USE_TTY}
 SYNAPSE_DIR = matrix/synapse
 SYNAPSE_CONFIG = ${SYNAPSE_DIR}/homeserver.yaml
 POSTGRES_DATA_DIR = matrix/postgresdata
+
 DRY_RUN ?= true
 export
 
@@ -34,7 +35,7 @@ clean-all: down rm clean-synapse-config clean-synapse-dir clean-postgres-data
 
 all:
 	@echo "Usage: make build | config"
-build: config pull
+build: config
 	${DC} -f ${DC_APP_DOCKER_CLI}  build ${DC_BUILD_ARGS}
 config:
 	@${DC} -f ${DC_APP_DOCKER_CLI} ${DC_APP_ENV} config
