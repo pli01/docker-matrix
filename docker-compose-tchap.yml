@@ -1,0 +1,127 @@
+version: '3.3'
+networks:
+  matrix-network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1450
+#    ipam:
+#      driver: default
+#      config:
+#        - subnet: 10.10.10.0/24
+#          gateway: 10.10.10.1
+
+services:
+  db:
+    image: postgres:${POSTGRES_VERSION:-14}
+    restart: unless-stopped
+    networks:
+      - matrix-network
+        #        ipv4_address: 10.10.10.2
+    volumes:
+     - ./matrix/postgresdata:/var/lib/postgresql/data
+
+    # These will be used in homeserver.yaml later on
+    environment:
+     - POSTGRES_DB=synapse
+     - POSTGRES_USER=synapse
+     - POSTGRES_PASSWORD=STRONGPASSWORD
+     - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+     
+  synapse:
+    build:
+      context: build/synapse-dinsic
+      dockerfile: docker/Dockerfile
+    image: matrixdotorg/synapse:${MATRIX_SYNAPSE_VERSION:-latest}
+    # image: matrixdotorg/synapse:v1.54.0
+    restart: unless-stopped
+    networks:
+      - matrix-network
+        # ipv4_address: 10.10.10.3
+    volumes:
+     - ./matrix/synapse:/data
+    depends_on:
+      - db
+    links:
+      - db
+
+#  sydent:
+#    build:
+#      context: build/sydent
+#      dockerfile: Dockerfile
+#    image: matrixdotorg/sydent:${MATRIX_SYDENT_VERSION:-latest}
+#    restart: unless-stopped
+#    networks:
+#      - matrix-network
+#        # ipv4_address: 10.10.10.4
+#    volumes:
+#     - ./matrix/sydent:/data
+#    depends_on:
+#      - db
+#    links:
+#      - db
+#
+#  sygnal:
+#    image: matrixdotorg/sygnal:${MATRIX_SYGNAL_VERSION:-latest}
+#    restart: unless-stopped
+#    networks:
+#      - matrix-network
+#        # ipv4_address: 10.10.10.5
+#    volumes:
+#     - ./matrix/sygnal:/data
+#    depends_on:
+#      - db
+#    links:
+#      - db
+#
+#  content-scanner:
+#    image: ghcr.io/matrix-org/matrix-content-scanner:${MATRIX_CONTENT_SCANNER_VERSION:-latest}
+#    restart: unless-stopped
+#    networks:
+#      - matrix-network
+#        # ipv4_address: 10.10.10.6
+#    volumes:
+#     - ./matrix/content-scanner:/data
+#    depends_on:
+#      - db
+#    links:
+#      - db
+#
+  element:
+    image: vectorim/element-web:${ELEMENT_VERSION:-latest}
+    # image: vectorim/element-web:v1.10.6
+    restart: unless-stopped
+    volumes:
+      - ./matrix/element-config.json:/app/config.json
+    networks:
+      - matrix-network
+        #  ipv4_address: 10.10.10.5
+        
+  mailhog:
+    image: mailhog/mailhog
+    restart: always
+    ports:
+      - 1025:1025
+      - 8025:8025
+    networks:
+      - matrix-network
+        #  ipv4_address: 10.10.10.6
+
+  proxy:
+    image: nginx:stable
+    ports:
+      - 80:80
+    networks:
+      - matrix-network
+    depends_on:
+      - synapse
+      - element
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+
+  # sygnal:
+  #   image: matrixdotorg/sygnal:latest
+  # matrix-media-repo: 
+  #   image: turt2live/matrix-media-repo
+  # matrix-content-scanner: 
+  #   image: ??
+
