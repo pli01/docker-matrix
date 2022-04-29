@@ -64,9 +64,19 @@ make clean-all
      - synapse config dir : `matrix/synapse/` (must be generated after bootstrap migrate_config below)
      - postgres data dir: `matrix/postgresdata/` (populated at bootstrap)
 
-* First, configure and launch the stack for the first time
+* To configure and launch the stack for the first time
 ```
 ./build-tchap.sh
+```
+
+* Then connect to http://localhost with one of users:
+  - `admin` 
+  - `test`
+(default password `CHANGEME`)
+
+* To clean all datas and stack
+```
+./clean-tchap.sh
 ```
 
 ## details

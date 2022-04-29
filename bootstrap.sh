@@ -1,7 +1,11 @@
 #!/bin/bash
+set -e -o pipefail
 DC_APP_DOCKER_CLI="${DC_APP_DOCKER_CLI:-docker-compose.yml}"
 echo "# generate matrix/synapse/homeserver.yaml"
 docker-compose -f ${DC_APP_DOCKER_CLI}  run  --rm -e SYNAPSE_NO_TLS=yes -e SYNAPSE_SERVER_NAME=localhost -e SYNAPSE_REPORT_STATS=no -e SYNAPSE_ENABLE_REGISTRATION=yes -e POSTGRES_DB=synapse -e POSTGRES_USER=synapse -e POSTGRES_PASSWORD=STRONGPASSWORD synapse migrate_config
+
+id
+find matrix -ls
 
 echo "# enable registration without verification (for dev purpose only)"
 cat <<EOF | tee -a matrix/synapse/homeserver.yaml
