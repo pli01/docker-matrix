@@ -57,7 +57,7 @@ sh-%:
 run-%:
 	${DC} -f ${DC_APP_DOCKER_CLI} ${DC_APP_ENV} run ${DC_RUN_ARGS} $*
 
-test-up: test-element-up test-synapse-up test-db-up test-synapse-api-up
+test-up: test-web-up test-synapse-up test-db-up test-synapse-api-up
 test-synapse-api-up:
 	${DC} -f ${DC_APP_DOCKER_CLI} ${DC_APP_ENV} exec $(DC_USE_TTY) proxy /bin/bash -c "$$(cat tests/tests-synapse-up.sh)"
 test-%-up:
