@@ -1,4 +1,5 @@
 name: CI PR and branches
+
 # Controls when the action will run. Triggers the workflow on push on branch except main
 # or pull request events but only for the main branch
 on:
@@ -23,14 +24,21 @@ jobs:
            docker version
            docker info
 
-      - name: Build & test
+      - name: Build
         run: |
            set -e
            echo "# build and run"
            set -x
-           ./build-tchap.sh
+           ./tchap-build.sh
+
+      - name: Run & test
+        run: |
+           set -e
+           echo "# run and test"
+           set -x
+           ./tchap-bootstrap.sh
 
       - name: Clean
         run: |
            echo "# clean"
-           ./clean-tchap.sh
+           ./tchap-clean.sh
