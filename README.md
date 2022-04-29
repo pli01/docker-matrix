@@ -1,8 +1,11 @@
 # docker-matrix
 
 matrix docker-compose stack for local/dev/testing purpose
+Two stacks are provided:
+- the original matrix.org version with element + synapse stack (`docker-compose.yml`)
+- or a tchap matrix version (`docker-compose.tchap.yml`)
 
-It includes:
+This stack includes the following common components:
  - nginx reverseproxy (http://localhost) :
    - to route trafic through  (`/`) to element-web
    - and (`/_matrix|/_synapse`) to synapse
@@ -11,7 +14,14 @@ It includes:
  - db : postgres instance
  - mailhog (http://localhost:8025/): mailhog/mailhog smtp and webmail instance
 
-## Run
+
+In addition, the Tchap version includes:
+ - synapse (tchap version)
+ - sydent (tchap version)
+ - content-scanner
+ - sygnal
+
+## Run the matrix version
 
 * Prereq:
   - install docker, docker-compose
@@ -43,6 +53,20 @@ make up
 * To remove all datas and stack
 ```
 make clean-all
+```
+
+## Run the tchap version
+
+* Prereq:
+  - install docker, docker-compose
+  - bootstrap data and generated config are stored in matrix/ directory:
+     - element web config: `matrix/element-config.json`
+     - synapse config dir : `matrix/synapse/` (must be generated after bootstrap migrate_config below)
+     - postgres data dir: `matrix/postgresdata/` (populated at bootstrap)
+
+* First, configure and launch the stack for the first time
+```
+./build-tchap.sh
 ```
 
 ## details
