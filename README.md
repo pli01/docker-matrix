@@ -36,7 +36,7 @@ make bootstrap-all
 ```
 
 * Then connect to http://localhost with one of users:
-  - `admin` 
+  - `admin`
   - `test`
 (default password `CHANGEME`)
 
@@ -70,7 +70,7 @@ make clean-all
 ```
 
 * Then connect to http://localhost with one of users:
-  - `admin` 
+  - `admin`
   - `test`
 (default password `CHANGEME`)
 

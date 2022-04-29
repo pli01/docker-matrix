@@ -26,7 +26,7 @@ services:
      - POSTGRES_USER=synapse
      - POSTGRES_PASSWORD=STRONGPASSWORD
      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
-     
+
   mailhog:
     image: mailhog/mailhog
     restart: always
@@ -60,7 +60,7 @@ services:
     networks:
       - matrix-network
         #  ipv4_address: 10.10.10.13
- 
+
   synapse:
     build:
       context: build/synapse-dinsic
