@@ -19,7 +19,7 @@ export
 
 bootstrap-all: bootstrap up test-up create-user
 
-bootstrap: pull
+bootstrap:
 	[ -f "${SYNAPSE_CONFIG}" ] || ./bootstrap.sh
 force-bootstrap: clean-synapse-config clean-synapse-dir clean-postgres-data bootstrap
 clean-synapse-config:
