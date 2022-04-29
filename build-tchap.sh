@@ -1,6 +1,15 @@
 #!/bin/bash
 set -e -o pipefail
 
+if [ -f "config-tchap.env" ] ; then
+    source config-tchap.env
+    export DC_APP_ENV=" --env-file config-tchap.env "
+fi
+
+# docker-compose version
+export DC_APP_DOCKER_CLI=docker-compose-tchap.yml
+
+# app version
 export POSTGRES_VERSION=${POSTGRES_VERSION:-14}
 export MATRIX_SYNAPSE_VERSION="${MATRIX_SYNAPSE_VERSION:-1.31.0_dinum_2021_10_05-sygnalrewrite-frozendict}"
 synapse_dinsic_git_tag="tags/${MATRIX_SYNAPSE_VERSION}"
@@ -16,8 +25,8 @@ sydent_dinsic_url_package="$sydent_dinsic_url/archive/refs/${sydent_dinsic_git_t
 
 export MATRIX_SYGNAL_VERSION=${MATRIX_SYGNAL_VERSION:-v0.11.0}
 export MATRIX_CONTENT_SCANNER_VERSION=${MATRIX_CONTENT_SCANNER_VERSION:-v1.9.0}
+export MATRIX_MEDIA_REPO_VERSION=${MATRIX_MEDIA_REPO_VERSION:-v1.2.12}
 
-echo "# get"
 mkdir -p build
 ( cd build
   echo "# get ${synapse_dinsic_url}"
@@ -38,8 +47,10 @@ mkdir -p build
 )
 
 echo "# build"
-export DC_APP_DOCKER_CLI=docker-compose-tchap.yml
-make build DC_APP_DOCKER_CLI=${DC_APP_DOCKER_CLI}
+make build DC_APP_DOCKER_CLI=${DC_APP_DOCKER_CLI} DC_APP_ENV="${DC_APP_ENV}"
+
+echo "# image versions:"
+make config DC_APP_DOCKER_CLI=docker-compose-tchap.yml DC_APP_ENV="${DC_APP_ENV}" |grep "image:" |sort
 
 echo "# bootstrap"
-make bootstrap-all DC_APP_DOCKER_CLI=${DC_APP_DOCKER_CLI}
+make bootstrap-all DC_APP_DOCKER_CLI=${DC_APP_DOCKER_CLI} DC_APP_ENV="${DC_APP_ENV}"

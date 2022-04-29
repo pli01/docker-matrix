@@ -16,7 +16,7 @@ services:
     restart: unless-stopped
     networks:
       - matrix-network
-        #        ipv4_address: 10.10.10.2
+        #        ipv4_address: 10.10.10.10
     volumes:
      - ./matrix/postgresdata:/var/lib/postgresql/data
 
@@ -27,6 +27,40 @@ services:
      - POSTGRES_PASSWORD=STRONGPASSWORD
      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
      
+  mailhog:
+    image: mailhog/mailhog
+    restart: always
+    ports:
+      - 1025:1025
+      - 8025:8025
+    networks:
+      - matrix-network
+        #  ipv4_address: 10.10.10.11
+
+  proxy:
+    image: nginx:stable
+    ports:
+      - 80:80
+    networks:
+      - matrix-network
+        #  ipv4_address: 10.10.10.12
+    depends_on:
+      - synapse
+      - element
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+
+
+  element:
+    image: vectorim/element-web:${ELEMENT_VERSION:-latest}
+    # image: vectorim/element-web:v1.10.6
+    restart: unless-stopped
+    volumes:
+      - ./matrix/element-config.json:/app/config.json
+    networks:
+      - matrix-network
+        #  ipv4_address: 10.10.10.13
+ 
   synapse:
     build:
       context: build/synapse-dinsic
@@ -36,7 +70,7 @@ services:
     restart: unless-stopped
     networks:
       - matrix-network
-        # ipv4_address: 10.10.10.3
+        # ipv4_address: 10.10.10.14
     volumes:
      - ./matrix/synapse:/data
     depends_on:
@@ -52,7 +86,7 @@ services:
 #    restart: unless-stopped
 #    networks:
 #      - matrix-network
-#        # ipv4_address: 10.10.10.4
+#        # ipv4_address: 10.10.10.15
 #    volumes:
 #     - ./matrix/sydent:/data
 #    depends_on:
@@ -65,7 +99,7 @@ services:
 #    restart: unless-stopped
 #    networks:
 #      - matrix-network
-#        # ipv4_address: 10.10.10.5
+#        # ipv4_address: 10.10.10.16
 #    volumes:
 #     - ./matrix/sygnal:/data
 #    depends_on:
@@ -78,7 +112,7 @@ services:
 #    restart: unless-stopped
 #    networks:
 #      - matrix-network
-#        # ipv4_address: 10.10.10.6
+#        # ipv4_address: 10.10.10.17
 #    volumes:
 #     - ./matrix/content-scanner:/data
 #    depends_on:
@@ -86,42 +120,17 @@ services:
 #    links:
 #      - db
 #
-  element:
-    image: vectorim/element-web:${ELEMENT_VERSION:-latest}
-    # image: vectorim/element-web:v1.10.6
-    restart: unless-stopped
-    volumes:
-      - ./matrix/element-config.json:/app/config.json
-    networks:
-      - matrix-network
-        #  ipv4_address: 10.10.10.5
-        
-  mailhog:
-    image: mailhog/mailhog
-    restart: always
-    ports:
-      - 1025:1025
-      - 8025:8025
-    networks:
-      - matrix-network
-        #  ipv4_address: 10.10.10.6
-
-  proxy:
-    image: nginx:stable
-    ports:
-      - 80:80
-    networks:
-      - matrix-network
-    depends_on:
-      - synapse
-      - element
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-
-  # sygnal:
-  #   image: matrixdotorg/sygnal:latest
-  # matrix-media-repo: 
-  #   image: turt2live/matrix-media-repo
-  # matrix-content-scanner: 
-  #   image: ??
-
+#
+#  media-repo:
+#    image: turt2live/matrix-media-repo:${MATRIX_MEDIA_REPO_VERSION:-v1.2.12}
+#    restart: unless-stopped
+#    networks:
+#      - matrix-network
+#        # ipv4_address: 10.10.10.18
+#    volumes:
+#     - ./matrix/content-scanner:/data
+#    depends_on:
+#      - db
+#    links:
+#      - db
+#

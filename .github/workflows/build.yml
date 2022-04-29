@@ -30,5 +30,7 @@ jobs:
            set -x
            ./build-tchap.sh
 
+      - name: Clean
+        run: |
            echo "# clean"
            ./clean-tchap.sh

@@ -5,11 +5,22 @@ DC_APP_DOCKER_CLI="${DC_APP_DOCKER_CLI:-docker-compose.yml}"
 DC_USE_TTY="${DC_USE_TTY:-}"
 
 echo "# generate matrix/synapse/homeserver.yaml"
-docker-compose -f ${DC_APP_DOCKER_CLI}  run ${DC_USE_TTY} --rm -e SYNAPSE_NO_TLS=yes -e SYNAPSE_SERVER_NAME=localhost -e SYNAPSE_REPORT_STATS=no -e SYNAPSE_ENABLE_REGISTRATION=yes -e POSTGRES_DB=synapse -e POSTGRES_USER=synapse -e POSTGRES_PASSWORD=STRONGPASSWORD synapse migrate_config
+docker-compose -f ${DC_APP_DOCKER_CLI}  run ${DC_USE_TTY} --rm \
+    -e SYNAPSE_NO_TLS=yes \
+    -e SYNAPSE_SERVER_NAME=localhost\
+    -e SYNAPSE_REPORT_STATS=no \
+    -e SYNAPSE_ENABLE_REGISTRATION=yes \
+    -e POSTGRES_DB=synapse \
+    -e POSTGRES_USER=synapse \
+    -e POSTGRES_PASSWORD=STRONGPASSWORD \
+    synapse \
+    migrate_config
 
 echo "# configure matrix/synapse/homeserver.yaml"
-
-docker-compose -f ${DC_APP_DOCKER_CLI} run ${DC_USE_TTY} --rm --entrypoint /bin/bash synapse -x -c '
+docker-compose -f ${DC_APP_DOCKER_CLI} run ${DC_USE_TTY} --rm \
+    --entrypoint /bin/bash \
+    synapse \
+    -c '
 echo "# Run in synapse"
 cat <<EOF | tee -a /data/homeserver.yaml
 
