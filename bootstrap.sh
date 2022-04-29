@@ -1,18 +1,35 @@
 #!/bin/bash
-DC_APP_DOCKER_CLI="${DC_APP_DOCKER_CLI:-docker-compose.yml}"
-echo "# generate matrix/synapse/homeserver.yaml"
-docker-compose -f ${DC_APP_DOCKER_CLI}  run  --rm -e SYNAPSE_NO_TLS=yes -e SYNAPSE_SERVER_NAME=localhost -e SYNAPSE_REPORT_STATS=no -e SYNAPSE_ENABLE_REGISTRATION=yes -e POSTGRES_DB=synapse -e POSTGRES_USER=synapse -e POSTGRES_PASSWORD=STRONGPASSWORD synapse migrate_config
+set -e -o pipefail
 
-echo "# enable registration without verification (for dev purpose only)"
-cat <<EOF | tee -a matrix/synapse/homeserver.yaml
+DC_APP_DOCKER_CLI="${DC_APP_DOCKER_CLI:-docker-compose.yml}"
+DC_USE_TTY="${DC_USE_TTY:-}"
+
+echo "# generate matrix/synapse/homeserver.yaml"
+docker-compose -f ${DC_APP_DOCKER_CLI}  run ${DC_USE_TTY} --rm \
+    -e SYNAPSE_NO_TLS=yes \
+    -e SYNAPSE_SERVER_NAME=localhost\
+    -e SYNAPSE_REPORT_STATS=no \
+    -e SYNAPSE_ENABLE_REGISTRATION=yes \
+    -e POSTGRES_DB=synapse \
+    -e POSTGRES_USER=synapse \
+    -e POSTGRES_PASSWORD=STRONGPASSWORD \
+    synapse \
+    migrate_config
+
+echo "# configure matrix/synapse/homeserver.yaml"
+docker-compose -f ${DC_APP_DOCKER_CLI} run ${DC_USE_TTY} --rm \
+    --entrypoint /bin/bash \
+    synapse \
+    -c '
+echo "# Run in synapse"
+cat <<EOF | tee -a /data/homeserver.yaml
+
+# enable registration without verification (for dev purpose only)
 
 enable_registration_without_verification: true
 public_baseurl: http://localhost/
-EOF
 
-echo "# add email config to matrix/synapse/homeserver.yaml"
-
-cat <<EOF >> matrix/synapse/homeserver.yaml
+# add email config to matrix/synapse/homeserver.yaml
 
 email:
    enable_notifs: true
@@ -24,4 +41,4 @@ email:
    notif_from: "dev@dev.net"
    notif_for_new_users: true
 EOF
-
+'

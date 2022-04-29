@@ -10,9 +10,9 @@ DOCKER_USE_TTY := $(shell ( test -t 0 || test -t 1 ) && echo "-t" )
 DC_USE_TTY     := $(shell ( test -t 0 || test -t 1 ) || echo "-T" )
 DC_RUN_ARGS := --rm ${DC_USE_TTY}
 
-SYNAPSE_DIR = matrix/synapse
-SYNAPSE_CONFIG = ${SYNAPSE_DIR}/homeserver.yaml
-POSTGRES_DATA_DIR = matrix/postgresdata
+SYNAPSE_DIR ?= matrix/synapse
+SYNAPSE_CONFIG ?= ${SYNAPSE_DIR}/homeserver.yaml
+POSTGRES_DATA_DIR ?= postgresdata
 
 DRY_RUN ?= true
 export
