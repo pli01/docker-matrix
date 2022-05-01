@@ -50,14 +50,13 @@ services:
         #  ipv4_address: 10.10.10.12
     depends_on:
       - synapse
-      - element
+      - web
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
 
-
-  element:
+  web:
     image: vectorim/element-web:${ELEMENT_VERSION:-latest}
-    # image: vectorim/element-web:v1.10.6
+    #image: tchap-web:${TCHAP_WEB_VERSION:-latest}
     restart: unless-stopped
     volumes:
       - ./matrix/element-config.json:/app/config.json
