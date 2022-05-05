@@ -22,7 +22,7 @@ In addition, the Tchap version includes:
  - sygnal
  - media-repo
 
-## Run the matrix version
+## To Run the matrix version
 
 * Prereq:
   - install docker, docker-compose
@@ -56,7 +56,7 @@ make up
 make clean-all
 ```
 
-## Run the tchap version
+## To Run the tchap version
 
 * Prereq:
   - install docker, docker-compose
