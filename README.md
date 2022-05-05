@@ -9,7 +9,7 @@ Two stacks are provided:
 This stack includes the following common components:
  - nginx reverseproxy (http://localhost) :
    - to route trafic through  (`/`) to element-web
-   - and (`/_matrix|/_synapse`) to synapse
+   - and (`/_matrix|/_synapse`) to backend (synapse,...)
  - element : vectorim/element-web web instance
  - synapse : matrixdotorg/synapse instance
  - db : postgres instance
@@ -21,6 +21,7 @@ In addition, the Tchap version includes:
  - content-scanner
  - sygnal
  - media-repo
+ - tchap-web (todo)
 
 ## To Run the matrix version
 
